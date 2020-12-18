@@ -1,38 +1,96 @@
-.App {
-  text-align: center;
+.navbar-dark{
+  background-image: linear-gradient(rgb(221, 4, 221),rgb(158, 9, 158));
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.navbar-dark .nav-item{
+  padding: 10px;
+  margin-left: 10px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.footer{
+    background-image: linear-gradient(rgb(201, 96, 201),rgb(243, 154, 243));
+    margin:0px auto;
+    padding: 20px 0px 20px 0px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.home_image{
+    width: 100%;
+    padding: 20px;
 }
-
-.App-link {
-  color: #61dafb;
+.title{
+    text-align: center;
+    font-size: 30px;
+    padding: 10px;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.task-list{
+    padding: 5px;
+}
+.modalBody{
+    height: 450px;
+    background-image: linear-gradient(rgb(195, 60, 248),rgb(105, 119, 248));
+    font-weight: 600;
+    font-size: 120%;
+}
+.modalHeader, .modalFooter{
+    background-image: linear-gradient(rgb(105, 119, 248),rgb(195, 60, 248));
+    font-weight: 800;
+}
+.editBody{
+    background-color: #e883f1;
+}
+.editHeader, .editFooter{
+    background-color: #cc4cd8;
+}
+.addBody{
+    background-color: #c983f1;
+}
+.addHeader, .addFooter{
+    background-color: #b74cd8;
+}
+#calendar{
+    width: 100%;
+}
+#calendar th{
+    text-align: center;
+}
+#month{
+    font-size: 150%;
+}
+#calendar td{
+    width: 200px;
+    height: 100px;
+}
+#calendar, #calendar th, #calendar td{
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+.daycell, .eventcell{
+    text-align: center;
+}
+.popheader{
+    background-color: #478cf3;
+}
+.popbody{
+    background-color: #7eacf1;
+}
+.eventEditHeader, .eventEditFooter{
+    background-color: #4752ee;
+}
+.eventEditBody{
+    background-color: #656bbd;
+}
+.eventAddHeader, .eventAddFooter{
+    background-color: #5b65f3;
+}
+.eventAddBody{
+    background-color: #7479be;
+}
+#loginTab{
+    background-image: linear-gradient(#059faa,#68a4a8);
+}
+#signupTab{
+    background-image: linear-gradient(#05ca7e,#7ec7ab);
+}
+#loginHeader,#loginFooter{
+    background-image: linear-gradient(#68a4a8,#059faa);
+}
+#signupHeader,#signupFooter{
+    background-image: linear-gradient(#7ec7ab,#05ca7e);
 }
