@@ -94,3 +94,9 @@
 #signupHeader,#signupFooter{
     background-image: linear-gradient(#7ec7ab,#05ca7e);
 }
+.eye-btn{
+    margin-top: 2.5%;
+    margin-left: -6%;
+    cursor: pointer;
+    z-index: 1;
+}
