@@ -1,1 +1,2 @@
-SECRET_KEY = "digital_diary_4gh95w11h3f04fhg50ghd56s8g28gwbmck0863k_user_idgyy28amzxxwf"
+export const SECRET_KEY = "digital_diary_4gh95w11h3f04fhg50ghd56s8g28gwbmck0863k_user_idgyy28amzxxwf"
+export const USER_NAME = "digital_diary_4g32510t92euyfdx3d68g2gbmcygyu0863k_user_namegyf23am44xtw1"

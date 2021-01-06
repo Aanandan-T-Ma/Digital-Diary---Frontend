@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Nav, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, 
         Label, Input, TabContent, TabPane, ModalFooter } from 'reactstrap'
-import { baseURL } from '../shared/baseURL'
+import { SECRET_KEY, USER_NAME } from '../shared/config'
 
 class Login extends Component{
     
@@ -12,11 +12,13 @@ class Login extends Component{
             activeTab: 'login',
             loginShowPass: false,
             showPass: false,
-            showConPass: false
+            showConPass: false,
+            username: localStorage.getItem(USER_NAME)
         }
         this.toggleModal = this.toggleModal.bind(this)
         this.login = this.login.bind(this)
         this.signup = this.signup.bind(this)
+        this.logout = this.logout.bind(this)
     }
 
     toggleModal(){
@@ -31,22 +33,30 @@ class Login extends Component{
         })
     }
 
+    logout(){
+        this.setState({
+            username: ''
+        })
+        localStorage.removeItem(SECRET_KEY)
+        localStorage.removeItem(USER_NAME)
+    }
+
     login(event){
+        event.preventDefault()
         const user = {
             userId: this.lemail.value,
             password: this.lpassword.value
         }
-        fetch(baseURL + 'users/login', {
+        fetch('users/login', {
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
                 'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin'
+            }
         })
         .then(response => {
             if(response.ok)
-              return response
+                return response
             else{
                 var error = new Error('Error ' + response.status + ': ' + response.statusText)
                 error.response = response
@@ -57,9 +67,26 @@ class Login extends Component{
             var error = new Error(err)
             throw error
         })
+        .then(response => response.json())
+        .then(response => {
+            if(response.resCode === 1){
+                this.setState({
+                    username: response.username
+                })
+                localStorage.setItem(SECRET_KEY, response.userId)
+                localStorage.setItem(USER_NAME, response.username)
+                window.location.reload()
+            }
+            else if(response.resCode === -1){
+                alert('Invalid Username/Email!')
+            }
+            else{
+                alert('Invalid Password!')
+            }
+            console.log(this.state.loggedIn)
+        })
         .catch(error => {
             console.log(error.message)
-            alert('Error: ' + error.message)
         })
     }
 
@@ -185,7 +212,13 @@ class Login extends Component{
     render(){
         return (
             <div>
-                <Button color="primary" onClick={this.toggleModal}><span className="fa fa-sign-in fa-lg"></span> Login</Button>
+                { this.state.username? 
+                    <div>
+                        <span id="username">{ this.state.username }</span>
+                        <Button color="primary" onClick={this.logout}><span className="fa fa-sign-out fa-lg"></span> Logout</Button>
+                    </div> : 
+                    <Button color="primary" onClick={this.toggleModal}><span className="fa fa-sign-in fa-lg"></span> Login</Button> 
+                }
                 { this.loginModal() }
             </div>
         )
