@@ -39,6 +39,7 @@ class Login extends Component{
         })
         localStorage.removeItem(SECRET_KEY)
         localStorage.removeItem(USER_NAME)
+        window.location.reload()
     }
 
     login(event){
@@ -49,10 +50,10 @@ class Login extends Component{
         }
         fetch('users/login', {
             method: 'POST',
-            body: JSON.stringify(user),
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(user)
         })
         .then(response => {
             if(response.ok)

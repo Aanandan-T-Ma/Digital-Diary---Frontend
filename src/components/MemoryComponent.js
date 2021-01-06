@@ -4,22 +4,41 @@ import { Button, Card, CardBody, CardImg, CardSubtitle, CardTitle,
 import { months } from '../shared/names'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import Home from './HomeComponent'
+import { SECRET_KEY } from '../shared/config'
 
 class Memories extends Component{
     constructor(props){
         super(props)
         this.state = {
-            memories: props.memories,
+            memories: [],
             modal: false,
-            modalMemory: props.memories[0],
+            modalMemory: {},
             editMode: false,
-            addMode: false
+            addMode: false,
+            userId: localStorage.getItem(SECRET_KEY)
         }
         this.toggleModal = this.toggleModal.bind(this)
         this.toggleEdit = this.toggleEdit.bind(this)
         this.toggleAdd = this.toggleAdd.bind(this)
         this.editMemory = this.editMemory.bind(this)
         this.addMemory = this.addMemory.bind(this)
+        this.getMemories = this.getMemories.bind(this)
+        this.getMemories()
+    }
+
+    render(){
+        if(this.state.userId){
+            return (
+                <div className="container">
+                    { this.memoryModal() }
+                    { this.editModal() }
+                    { this.addModal() }
+                    { this.renderMemories() } 
+                </div>
+            )
+        }
+        else return <Home/>
     }
 
     toggleModal(){
@@ -67,62 +86,103 @@ class Memories extends Component{
     }
 
     addMemory(event){
-        if(!this.mtitle.value)
+        if(!this.mtitle.value){
           alert('Title is empty!')
-        else if(!this.mdate.value)
+          event.preventDefault()
+        }
+        else if(!this.mdate.value){
           alert('Date is empty!')
-        else if(!this.mdesc.value)
+          event.preventDefault()
+        }
+        else if(!this.mdesc.value){
           alert('Description is empty!')
-        else if(new Date(this.mdate.value) > new Date())
+          event.preventDefault()
+        }
+        else if(new Date(this.mdate.value) > new Date()){
           alert('Invalid Date!')
+          event.preventDefault()
+        }
         else{
-           var memories = this.state.memories;
            const memory = {
-              id: memories.length,
+              userId: this.state.userId,
               title: this.mtitle.value,
               date: this.mdate.value,
               description: this.mdesc.value
            }
-           memories.push(memory)
-           this.setState({
-               memories: memories
-           })
-           this.toggleAdd()
-           setTimeout(() => {
-               alert("Memory created successfully!")
-           }, 1);
+           fetch('/memories', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(memory)
+            })
+            .then(response => {
+                if(response.ok)
+                    return response
+                else{
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            },
+            err => {
+                var error = new Error(err)
+                throw error
+            })
+            .catch(error => {
+                console.log(error.message)
+            })
         }
-        event.preventDefault()
     }
 
     editMemory(event){
-        if(!this.mtitle.value)
+        if(!this.mtitle.value){
           alert('Title is empty!')
-        else if(!this.mdate.value)
+          event.preventDefault()
+        }
+        else if(!this.mdate.value){
           alert('Date is empty!')
-        else if(!this.mdesc.value)
+          event.preventDefault()
+        }
+        else if(!this.mdesc.value){
           alert('Description is empty!')
-        else if(new Date(this.mdate.value) > new Date())
+          event.preventDefault()
+        }
+        else if(new Date(this.mdate.value) > new Date()){
           alert('Invalid Date!')
+          event.preventDefault()
+        }
         else{
-            var i = this.state.memories.indexOf(this.state.modalMemory)
             const memory = {
-                id: this.state.modalMemory.id,
+                userId: this.state.userId,
                 title: this.mtitle.value,
                 date: this.mdate.value,
                 description: this.mdesc.value
             }
-            var mems = this.state.memories
-            mems[i] = memory
-            this.setState({
-                memories: mems
+            fetch('/memories/'+this.state.modalMemory._id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(memory)
             })
-            this.toggleEdit()
-            setTimeout(() => {
-                alert("Changes Saved successfully!")
-            }, 1);
+            .then(response => {
+                if(response.ok)
+                    return response
+                else{
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            },
+            err => {
+                var error = new Error(err)
+                throw error
+            })
+            .catch(error => {
+                console.log(error.message)
+            })
         }
-        event.preventDefault()
     }
 
     deleteMemory(memory){
@@ -133,11 +193,30 @@ class Memories extends Component{
             {
               label: 'Yes',
               onClick: () => {
-                var memories = this.state.memories
-                memories.splice(memories.indexOf(memory), 1)
-                this.setState({
-                    memories: memories
-                })
+                    fetch('/memories/'+memory._id, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({userId: this.state.userId})
+                    })
+                    .then(response => {
+                        if(response.ok)
+                            return response
+                        else{
+                            var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                            error.response = response
+                            throw error
+                        }
+                    },
+                    err => {
+                        var error = new Error(err)
+                        throw error
+                    })
+                    .catch(error => {
+                        console.log(error.message)
+                    })
+                    window.location.reload()
               }
             },
             {
@@ -149,6 +228,8 @@ class Memories extends Component{
     }
 
     groupMemories(){
+        if(this.state.memories.length === 0) 
+            return []
         var memories = this.state.memories
         memories.sort((m1, m2) => { return new Date(m1.date) - new Date(m2.date) })
         var date = new Date(memories[memories.length-1].date)
@@ -324,7 +405,7 @@ class Memories extends Component{
             return (
                 <div>
                     <div className="row justify-content-center">
-                        <Button color="primary" className="mt-3" onClick={this.toggleAdd}>New Memory <span className="fa fa-plus-square"></span></Button>
+                        <Button color="primary" className="mt-3 mb-3" onClick={this.toggleAdd}>New Memory <span className="fa fa-plus-square"></span></Button>
                     </div>
                     {memories}
                 </div>
@@ -332,15 +413,36 @@ class Memories extends Component{
         }  
     }
 
-    render(){
-        return (
-            <div className="container">
-                { this.memoryModal() }
-                { this.editModal() }
-                { this.addModal() }
-                { this.renderMemories() } 
-            </div>
-        )
+    getMemories(){
+        fetch('/memories/all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userId: this.state.userId})
+        })
+        .then(response => {
+            if(response.ok)
+                return response
+            else{
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        err => {
+            var error = new Error(err)
+            throw error
+        })
+        .then(response => response.json())
+        .then(response => {
+            this.setState({
+                memories: response
+            })
+        })
+        .catch(error => {
+            console.log(error.message)
+        })
     }
 }
 

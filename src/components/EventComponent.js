@@ -4,18 +4,21 @@ import { Button, UncontrolledPopover, PopoverHeader, PopoverBody, Form,
 import { months } from '../shared/names'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import Home from './HomeComponent'
+import { SECRET_KEY } from '../shared/config'
 
 class Events extends Component {
 
     constructor(props){
         super(props)
         this.state = {
-            events: props.events,
+            events: [],
             curMonth: new Date().getMonth(),
             curYear: new Date().getFullYear(),
-            modalEvent: props.events[0],
+            modalEvent: {},
             editMode: false,
-            addMode: false
+            addMode: false,
+            userId: localStorage.getItem(SECRET_KEY)
         }
         this.next = this.next.bind(this)
         this.prev = this.prev.bind(this)
@@ -23,6 +26,23 @@ class Events extends Component {
         this.toggleAdd = this.toggleAdd.bind(this)
         this.editEvent = this.editEvent.bind(this)
         this.addEvent = this.addEvent.bind(this)
+        this.getEvents = this.getEvents.bind(this)
+        this.getEvents()
+    }
+
+    render(){
+        if(this.state.userId){
+            return (
+                <div className="container">
+                    { this.editModal() }
+                    { this.addModal() }
+                    <div className="pb-4">
+                    { this.renderEvents() }
+                    </div>
+                </div>
+            )
+        }
+        else return <Home/>
     }
 
     monthStructure(){
@@ -86,30 +106,48 @@ class Events extends Component {
     }
 
     addEvent(event){
-        if(!this.etitle.value)
+        if(!this.etitle.value){
           alert('Title is empty!')
-        else if(!this.edate.value)
+          event.preventDefault()
+        }
+        else if(!this.edate.value){
           alert('Date is empty!')
+          event.preventDefault()
+        }
         else{
-           var events = this.state.events;
            const evt = {
-              id: events.length,
+              userId: this.state.userId,
               title: this.etitle.value,
               date: this.edate.value,
               time: this.etime.value,
               description: this.edesc.value,
-              type: this.etype.value
+              once: false
            }
-           events.push(evt)
-           this.setState({
-               events: events
+           fetch('/events', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(evt)
            })
-           this.toggleAdd()
-           setTimeout(() => {
-               alert("Event created successfully!")
-           }, 1);
+           .then(response => {
+               if(response.ok)
+                   return response
+               else{
+                   var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                   error.response = response
+                   throw error
+               }
+           },
+           err => {
+               var error = new Error(err)
+               throw error
+           })
+           .catch(error => {
+               console.log(error.message)
+           })
+            event.preventDefault()
         }
-        event.preventDefault()
     }
 
     deleteEvent(event){
@@ -364,16 +402,36 @@ class Events extends Component {
         )
     }
 
-    render(){
-        return (
-            <div className="container">
-                { this.editModal() }
-                { this.addModal() }
-                <div className="pb-4">
-                  { this.renderEvents() }
-                </div>
-            </div>
-        );
+    getEvents(){
+        fetch('/events/all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userId: this.state.userId})
+        })
+        .then(response => {
+            if(response.ok)
+                return response
+            else{
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        err => {
+            var error = new Error(err)
+            throw error
+        })
+        .then(response => response.json())
+        .then(response => {
+            this.setState({
+                events: response
+            })
+        })
+        .catch(error => {
+            console.log(error.message)
+        })
     }
 }
 
