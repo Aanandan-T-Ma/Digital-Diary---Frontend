@@ -24,10 +24,16 @@ class Events extends Component {
         this.prev = this.prev.bind(this)
         this.toggleEdit = this.toggleEdit.bind(this)
         this.toggleAdd = this.toggleAdd.bind(this)
+        this.togglePopover = this.togglePopover.bind(this)
         this.editEvent = this.editEvent.bind(this)
         this.addEvent = this.addEvent.bind(this)
         this.getEvents = this.getEvents.bind(this)
+        this.assignPopoverOpen = this.assignPopoverOpen.bind(this)
+    }
+
+    componentDidMount(){
         this.getEvents()
+        this.assignPopoverOpen()
     }
 
     render(){
@@ -98,6 +104,15 @@ class Events extends Component {
         })
     }
 
+    togglePopover(event){
+        const index = this.state.events.indexOf(event)
+        var events = this.state.events
+        events[index].popoverOpen = !events[index].popoverOpen
+        this.setState({
+            events: events
+        })
+    }
+
     openModal(event){
         this.setState({
             modalEvent: event,
@@ -115,38 +130,37 @@ class Events extends Component {
           event.preventDefault()
         }
         else{
-           const evt = {
+            const evt = {
               userId: this.state.userId,
               title: this.etitle.value,
               date: this.edate.value,
               time: this.etime.value,
               description: this.edesc.value,
-              once: false
-           }
-           fetch('/events', {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/json'
-               },
-               body: JSON.stringify(evt)
-           })
-           .then(response => {
-               if(response.ok)
-                   return response
-               else{
-                   var error = new Error('Error ' + response.status + ': ' + response.statusText)
-                   error.response = response
-                   throw error
-               }
-           },
-           err => {
-               var error = new Error(err)
-               throw error
-           })
-           .catch(error => {
-               console.log(error.message)
-           })
-            event.preventDefault()
+              once: this.etype.value === 'once'
+            }
+            fetch('/events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(evt)
+            })
+            .then(response => {
+                if(response.ok)
+                    return response
+                else{
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            },
+            err => {
+                var error = new Error(err)
+                throw error
+            })
+            .catch(error => {
+                console.log(error.message)
+            })
         }
     }
 
@@ -158,11 +172,30 @@ class Events extends Component {
             {
               label: 'Yes',
               onClick: () => {
-                var events = this.state.events
-                events.splice(events.indexOf(event), 1)
-                this.setState({
-                    events: events
-                })
+                    fetch('/events/'+event._id, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({userId: this.state.userId})
+                    })
+                    .then(response => {
+                        if(response.ok)
+                            return response
+                        else{
+                            var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                            error.response = response
+                            throw error
+                        }
+                    },
+                    err => {
+                        var error = new Error(err)
+                        throw error
+                    })
+                    .catch(error => {
+                        console.log(error.message)
+                    })
+                    window.location.reload()
               }
             },
             {
@@ -174,31 +207,47 @@ class Events extends Component {
     }
 
     editEvent(event){
-        if(!this.etitle.value)
-          alert('Title is empty!');
-        else if(!this.edate.value)
-          alert('Date is empty!');
+        if(!this.etitle.value){
+          alert('Title is empty!')
+          event.preventDefault()
+        }
+        else if(!this.edate.value){
+          alert('Date is empty!')
+          event.preventDefault()
+        }
         else{
-            var i = this.state.events.indexOf(this.state.modalEvent)
             const evt = {
-                id: this.state.modalEvent.id,
+                userId: this.state.userId,
                 title: this.etitle.value,
                 date: this.edate.value,
                 time: this.etime.value,
-                description: this.edesc.value
+                description: this.edesc.value,
+                once: this.etype.value === 'once'
             }
-            var evts = this.state.events
-            evts[i] = evt
-            this.setState({
-                events: evts
+            fetch('/events/'+this.state.modalEvent._id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(evt)
             })
-            console.log(this.state.events)
+            .then(response => {
+                if(response.ok)
+                    return response
+                else{
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            },
+            err => {
+                var error = new Error(err)
+                throw error
+            })
+            .catch(error => {
+                console.log(error.message)
+            })
         }
-        event.preventDefault()
-        this.toggleEdit()
-        setTimeout(() => {
-            alert("Changes Saved successfully!")
-        }, 1);
     }
 
     addModal(){
@@ -226,8 +275,8 @@ class Events extends Component {
                             <Label htmlFor="etype" className="col-12 col-sm-2 offset-sm-1">Event Type</Label>
                             <Input type="select" name="etype" id="etype" className="col-12 col-sm-7"  
                               innerRef={(input) => this.etype = input}>
-                                <option value="regular">Regular</option>
                                 <option value="once">Only Once</option>
+                                <option value="regular">Regular</option>
                             </Input>
                         </div>
                         <div className="form-row pt-3">
@@ -279,10 +328,10 @@ class Events extends Component {
                         </div>
                         <div className="form-row pt-3">
                             <Label htmlFor="etype" className="col-12 col-sm-2 offset-sm-1">Event Type</Label>
-                            <Input type="select" name="etype" id="etype" className="col-12 col-sm-7" defaultValue={event.type} 
+                            <Input type="select" name="etype" id="etype" className="col-12 col-sm-7" defaultValue={event.once? 'once':'regular'} 
                               innerRef={(input) => this.etype = input}>
-                                <option value="regular">Regular</option>
                                 <option value="once">Only Once</option>
+                                <option value="regular">Regular</option>
                             </Input>
                         </div>
                         <div className="form-row pt-3">
@@ -313,7 +362,7 @@ class Events extends Component {
     renderEvents(){
         const monthStruct = this.monthStructure()
         const wantedEvents = this.state.events.filter((event) => {
-            return Number(event.date.substring(5,7)) === this.state.curMonth+1 && (event.type === "regular"||Number(event.date.substring(0,4)) === this.state.curYear)
+            return Number(event.date.substring(5,7)) === this.state.curMonth+1 && (!event.once || Number(event.date.substring(0,4)) === this.state.curYear)
         })
         const monthMat = monthStruct.map((week) => {
             const days = week.map((day) => {
@@ -330,17 +379,18 @@ class Events extends Component {
                         time = h + evt.time.substring(2,5) + ap
                     }
                     return (
-                        <div style={{cursor: "pointer"}} id={"event"+evt.id}>
+                        <div style={{cursor: "pointer"}} id={"event"+evt._id}>
                             { time+" "+evt.title }
-                            <UncontrolledPopover trigger="legacy" placement="bottom" target={"event"+evt.id}>
+                            <UncontrolledPopover trigger="legacy" isOpen={evt.popoverOpen} toggle={() => this.togglePopover(evt)}
+                                        placement="bottom" target={"event"+evt._id}>
                                 <PopoverHeader className="popheader">{evt.title}</PopoverHeader>
                                 <PopoverBody className="popbody">
                                     <div className="pt-1 pb-2">
                                         {evt.description}
                                     </div>
                                     <div className="d-flex justify-content-around">
-                                      <Button color="primary" onClick={() => this.openModal(evt)}>Edit <span className="fa fa-edit"></span></Button>
-                                      <Button color="danger" onClick={() => this.deleteEvent(evt)}>Delete <span className="fa fa-trash"></span></Button>
+                                      <Button color="primary" onClick={() => {this.togglePopover(evt); this.openModal(evt)}}>Edit <span className="fa fa-edit"></span></Button>
+                                      <Button color="danger" onClick={() => {this.togglePopover(evt); this.deleteEvent(evt)}}>Delete <span className="fa fa-trash"></span></Button>
                                     </div>
                                 </PopoverBody>
                             </UncontrolledPopover>
@@ -431,6 +481,15 @@ class Events extends Component {
         })
         .catch(error => {
             console.log(error.message)
+        })
+    }
+
+    assignPopoverOpen(){
+        var events = this.state.events
+        for(var i=0;i<events.length;i++)
+            events[i].popoverOpen = false
+        this.setState({
+            events: events
         })
     }
 }

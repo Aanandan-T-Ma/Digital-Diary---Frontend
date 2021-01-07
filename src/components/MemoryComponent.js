@@ -24,6 +24,9 @@ class Memories extends Component{
         this.editMemory = this.editMemory.bind(this)
         this.addMemory = this.addMemory.bind(this)
         this.getMemories = this.getMemories.bind(this)
+    }
+
+    componentDidMount(){
         this.getMemories()
     }
 
