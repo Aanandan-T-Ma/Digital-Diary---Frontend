@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import { Form, Input, InputGroup, InputGroupAddon, Button, ListGroupItem } from 'reactstrap';
+import React, { Component } from 'react'
+import { Form, Input, InputGroup, InputGroupAddon, Button, ListGroupItem } from 'reactstrap'
+import '../styles/todoStyles.css'
 
 class Todo extends Component{
 
     constructor(props){
-        super(props);
+        super(props)
         this.state = {
             dateInput: "text",
             timeInput: "text",
             tasks: props.tasks
         } 
-        this.addTask = this.addTask.bind(this);
+        this.addTask = this.addTask.bind(this)
     }
 
     render(){
-        const Tasks = this.renderTasks();
+        const Tasks = this.renderTasks()
         return (
             <div className="container fill-empty">
                 <div className="row">
@@ -39,14 +40,14 @@ class Todo extends Component{
                 </div>
                 { Tasks }
             </div>
-        );
+        )
     }
 
     renderTasks(){
         if(!this.state.tasks){
             return (
                 <div></div>
-            );
+            )
         }
         else{
           const task = this.state.tasks.map((task) => {
@@ -57,23 +58,23 @@ class Todo extends Component{
                         {task.name}<span className="close" onClick={() => this.deleteTask(task)}>&times;</span>
                     </ListGroupItem> 
                 </div>
-            );
-          });  
+            )
+          })  
           return (
             <div className="task-list">
                     { task } 
             </div>
-          ); 
+          ) 
         }
     }
 
     addTask(event){
         if(!this.task.value)
-          alert('Task not provided!');
+          alert('Task not provided!')
         else if(!this.deadlineDate.value)
-          alert('Deadline Date not provided!');
+          alert('Deadline Date not provided!')
         else if(!this.deadlineTime.value)
-          alert('Deadline Time not provided!');
+          alert('Deadline Time not provided!')
         else{
            const inputDate = new Date(this.deadlineDate.value)
            inputDate.setMinutes(Number(this.deadlineTime.value.substring(3,5)))
@@ -84,40 +85,40 @@ class Todo extends Component{
                deadline: inputDate,
                done: false
            }
-           const added = this.state.tasks;
-           added.push(task); 
+           const added = this.state.tasks
+           added.push(task) 
            this.setState({
                tasks: added
-           });
-           console.log(this.state.tasks);
+           })
+           console.log(this.state.tasks)
         }    
-        event.preventDefault(); 
+        event.preventDefault() 
     }
     
     markTask(task){
-        var tasks = this.state.tasks;
+        var tasks = this.state.tasks
         for(var i=0;i<tasks.length;i++){
             if(tasks[i]===task){
-              tasks[i].done = !tasks[i].done;
-              break;
+              tasks[i].done = !tasks[i].done
+              break
             }
         }
         this.setState({
             tasks: tasks
-        });
+        })
     }
 
     deleteTask(task){
-        var tasks = this.state.tasks;
-        var i;
+        var tasks = this.state.tasks
+        var i
         for(i=0;i<tasks.length;i++)
           if(tasks[i]===task)
-            break;
-        tasks.splice(i,1);    
+            break
+        tasks.splice(i,1)    
         this.setState({
             tasks: tasks
-        });
+        })
     }
 }
 
-export default Todo;
+export default Todo

@@ -1,0 +1,38 @@
+#calendar{
+    width: 100%;
+}
+#calendar th{
+    text-align: center;
+}
+#month{
+    font-size: 150%;
+}
+#calendar td{
+    width: 200px;
+    height: 100px;
+}
+#calendar, #calendar th, #calendar td{
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+.daycell, .eventcell{
+    text-align: center;
+}
+.popheader{
+    background-color: #478cf3;
+}
+.popbody{
+    background-color: #7eacf1;
+}
+.eventEditHeader, .eventEditFooter{
+    background-color: #4752ee;
+}
+.eventEditBody{
+    background-color: #656bbd;
+}
+.eventAddHeader, .eventAddFooter{
+    background-color: #5b65f3;
+}
+.eventAddBody{
+    background-color: #7479be;
+}

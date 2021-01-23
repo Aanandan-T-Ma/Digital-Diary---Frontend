@@ -6,6 +6,7 @@ import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import Home from './HomeComponent'
 import { SECRET_KEY } from '../shared/config'
+import '../styles/eventStyles.css'
 
 class Events extends Component {
 

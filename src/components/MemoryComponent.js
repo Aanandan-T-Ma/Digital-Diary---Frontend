@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Button, Card, CardBody, CardImg, CardSubtitle, CardTitle, 
-         Form, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+         Form, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { months } from '../shared/names'
 import { confirmAlert } from 'react-confirm-alert'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import Home from './HomeComponent'
 import { SECRET_KEY } from '../shared/config'
+import '../styles/memoryStyles.css'
 
 class Memories extends Component{
     constructor(props){

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Nav, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, 
         Label, Input, TabContent, TabPane, ModalFooter } from 'reactstrap'
 import { SECRET_KEY, USER_NAME } from '../shared/config'
+import '../styles/loginStyles.css'
 
 class Login extends Component{
     

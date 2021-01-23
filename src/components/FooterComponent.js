@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import '../styles/footerStyles.css'
 
 class Footer extends Component{
     render(){
@@ -47,8 +48,8 @@ class Footer extends Component{
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 }
 
-export default Footer;
+export default Footer

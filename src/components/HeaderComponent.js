@@ -1,12 +1,13 @@
-import React, {Component} from 'react';
-import { Navbar, NavbarBrand, Nav, NavItem, NavbarToggler, Collapse } from 'reactstrap';
-import { NavLink } from 'react-router-dom';    
-import Login from './LoginComponent';
+import React, {Component} from 'react'
+import { Navbar, NavbarBrand, Nav, NavItem, NavbarToggler, Collapse } from 'reactstrap'
+import { NavLink } from 'react-router-dom'    
+import Login from './LoginComponent'
+import '../styles/headerStyles.css'
 
 class Header extends Component{
 
     constructor(props){
-        super(props);
+        super(props)
         this.state={
             isNavOpen: false
         }
@@ -16,7 +17,7 @@ class Header extends Component{
     toggleNav(){
         this.setState({
             isNavOpen: !this.state.isNavOpen
-        });
+        })
     }
 
     render(){
@@ -55,8 +56,8 @@ class Header extends Component{
                    </div>
                </Navbar>
            </div>
-       ); 
+       ) 
     }
 }
 
-export default Header;
+export default Header

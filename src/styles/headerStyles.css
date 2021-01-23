@@ -1,0 +1,7 @@
+.navbar-dark{
+    background-image: linear-gradient(rgb(221, 4, 221),rgb(158, 9, 158));
+}
+.navbar-dark .nav-item{
+    padding: 10px;
+    margin-left: 10px;
+}

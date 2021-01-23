@@ -1,0 +1,22 @@
+.modalBody{
+    height: 450px;
+    background-image: linear-gradient(rgb(195, 60, 248),rgb(105, 119, 248));
+    font-weight: 600;
+    font-size: 120%;
+}
+.modalHeader, .modalFooter{
+    background-image: linear-gradient(rgb(105, 119, 248),rgb(195, 60, 248));
+    font-weight: 800;
+}
+.addBody{
+    background-color: #c983f1;
+}
+.addHeader, .addFooter{
+    background-color: #b74cd8;
+}
+.editBody{
+    background-color: #e883f1;
+}
+.editHeader, .editFooter{
+    background-color: #cc4cd8;
+}

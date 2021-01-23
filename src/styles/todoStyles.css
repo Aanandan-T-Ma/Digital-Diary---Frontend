@@ -1,0 +1,30 @@
+.title{
+    text-align: center;
+    font-size: 30px;
+    padding: 10px;
+    font-weight: bold;
+}
+.task-list{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px 100px;
+}
+@media only screen and (max-width: 800px) {
+    .task-list {
+        margin: 5px 50px;
+    }
+}
+@media only screen and (max-width: 470px) {
+    .task-list {
+        margin: 5px 20px;
+    }
+}
+.task {
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.close {
+    text-align: right;
+    margin-left: 10px;
+}

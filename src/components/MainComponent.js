@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import Header from './HeaderComponent';
-import Footer from './FooterComponent';
-import Home from './HomeComponent';
-import Memories from './MemoryComponent';
-import Events  from  './EventComponent';
-import Todo from './TodoComponent';
-import Contact from './ContactComponent';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { tasks } from '../shared/tasks';
+import React, {Component} from 'react'
+import Header from './HeaderComponent'
+import Footer from './FooterComponent'
+import Home from './HomeComponent'
+import Memories from './MemoryComponent'
+import Events  from  './EventComponent'
+import Todo from './TodoComponent'
+import Contact from './ContactComponent'
+import { Switch, Route, Redirect } from 'react-router-dom'
+import { tasks } from '../shared/tasks'
 
 class Main extends Component {
 
@@ -25,8 +25,8 @@ class Main extends Component {
                 </Switch>
                 <Footer />
             </>
-        );
+        )
     }
 }
 
-export default Main;
+export default Main

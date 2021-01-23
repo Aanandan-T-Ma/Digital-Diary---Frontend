@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import '../styles/homeStyles.css'
 
 class Home extends Component{
     render(){
@@ -62,8 +63,8 @@ class Home extends Component{
                     it at your fingertips.
                 </p>
             </div>
-        );
+        )
     }
 }
 
-export default Home;
+export default Home
