@@ -33,7 +33,7 @@ class Memories extends Component{
     render(){
         if(this.state.userId){
             return (
-                <div className="container">
+                <div className="container fill-empty">
                     { this.memoryModal() }
                     { this.editModal() }
                     { this.addModal() }

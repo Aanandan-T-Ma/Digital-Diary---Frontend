@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { Form, Input, InputGroup, InputGroupAddon, Button, ListGroupItem } from 'reactstrap';
 
 class Todo extends Component{
 
@@ -11,6 +11,60 @@ class Todo extends Component{
             tasks: props.tasks
         } 
         this.addTask = this.addTask.bind(this);
+    }
+
+    render(){
+        const Tasks = this.renderTasks();
+        return (
+            <div className="container fill-empty">
+                <div className="row">
+                    <div className="col-12 title">Your Tasks</div>
+                </div>
+                <hr />
+                <div className="row justify-content-center">
+                    <div className="col-12 col-md-10">
+                      <Form onSubmit={this.addTask}> 
+                        <InputGroup>
+                          <Input type="text" placeholder="Add Task..." innerRef={(input) => this.task = input} />
+                          <Input type={this.state.dateInput} placeholder="Deadline Date" innerRef={(input) => this.deadlineDate = input} 
+                              onFocus={() => this.setState({dateInput: "date"})} onBlur={() => this.setState({dateInput: "text"})} />
+                          <Input type={this.state.timeInput} placeholder="Deadline Time" innerRef={(input) => this.deadlineTime = input} 
+                              onFocus={() => this.setState({timeInput: "time"})} onBlur={() => this.setState({timeInput: "text"})} />    
+                          <InputGroupAddon addonType="append">
+                              <Button type="submit">Add</Button>
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </Form> 
+                    </div>
+                </div>
+                { Tasks }
+            </div>
+        );
+    }
+
+    renderTasks(){
+        if(!this.state.tasks){
+            return (
+                <div></div>
+            );
+        }
+        else{
+          const task = this.state.tasks.map((task) => {
+            return (
+                <div key={task.id} className="task" title={new Date()>new Date(task.deadline)? "Deadline exceeded":"Deadline: "+task.deadline}>
+                    <ListGroupItem color={new Date()>new Date(task.deadline)? "danger":"primary"} style={{textDecoration: task.done?"line-through":"none"}} 
+                                   onClick={() => this.markTask(task)}>
+                        {task.name}<span className="close" onClick={() => this.deleteTask(task)}>&times;</span>
+                    </ListGroupItem> 
+                </div>
+            );
+          });  
+          return (
+            <div className="task-list">
+                    { task } 
+            </div>
+          ); 
+        }
     }
 
     addTask(event){
@@ -35,7 +89,6 @@ class Todo extends Component{
            this.setState({
                tasks: added
            });
-           alert('Task: '+this.task.value+'\nDate: '+this.deadlineDate.value+'\nTime: '+this.deadlineTime.value+"\n"+inputDate);
            console.log(this.state.tasks);
         }    
         event.preventDefault(); 
@@ -45,7 +98,7 @@ class Todo extends Component{
         var tasks = this.state.tasks;
         for(var i=0;i<tasks.length;i++){
             if(tasks[i]===task){
-              tasks[i].done ^= 1;
+              tasks[i].done = !tasks[i].done;
               break;
             }
         }
@@ -64,61 +117,6 @@ class Todo extends Component{
         this.setState({
             tasks: tasks
         });
-    }
-
-    renderTasks(){
-        if(!this.state.tasks){
-            return (
-                <div></div>
-            );
-        }
-        else{
-          const task = this.state.tasks.map((task) => {
-            return (
-                <div key={task.id} className="col-12 task-list">
-                    <ListGroupItem color="primary" style={{textDecoration: task.done?"line-through":"none",cursor: "pointer"}} onClick={() => this.markTask(task)}>
-                        {task.name}<span className="close" onClick={() => this.deleteTask(task)}>&times;</span>
-                    </ListGroupItem> 
-                </div>
-            );
-          });  
-          return (
-            <div className="row justify-content-center">
-                <ListGroup>
-                    { task } 
-                </ListGroup>
-            </div>
-          ); 
-        }
-    }
-
-    render(){
-        const Tasks = this.renderTasks();
-        return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-12 title">To-Do List</div>
-                </div>
-                <hr />
-                <div className="row justify-content-center">
-                    <div className="col-12 col-md-10">
-                      <Form onSubmit={this.addTask}> 
-                        <InputGroup>
-                          <Input type="text" placeholder="Add Task..." innerRef={(input) => this.task = input} />
-                          <Input type={this.state.dateInput} placeholder="Deadline Date" innerRef={(input) => this.deadlineDate = input} 
-                              onFocus={() => this.setState({dateInput: "date"})} onBlur={() => this.setState({dateInput: "text"})} />
-                          <Input type={this.state.timeInput} placeholder="Deadline Time" innerRef={(input) => this.deadlineTime = input} 
-                              onFocus={() => this.setState({timeInput: "time"})} onBlur={() => this.setState({timeInput: "text"})} />    
-                          <InputGroupAddon addonType="append">
-                              <Button type="submit">Add</Button>
-                          </InputGroupAddon>
-                        </InputGroup>
-                      </Form> 
-                    </div>
-                </div>
-                { Tasks }
-            </div>
-        );
     }
 }
 

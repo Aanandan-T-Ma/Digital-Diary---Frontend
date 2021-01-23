@@ -7,7 +7,7 @@
 }
 .footer{
     background-image: linear-gradient(rgb(201, 96, 201),rgb(243, 154, 243));
-    margin:0px auto;
+    margin: 0px auto;
     padding: 20px 0px 20px 0px;
 }
 .home_image{
@@ -18,9 +18,33 @@
     text-align: center;
     font-size: 30px;
     padding: 10px;
+    font-weight: bold;
 }
 .task-list{
-    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px 100px;
+}
+@media only screen and (max-width: 800px) {
+    .task-list {
+        margin: 5px 50px;
+    }
+}
+@media only screen and (max-width: 470px) {
+    .task-list {
+        margin: 5px 20px;
+    }
+}
+.task {
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.fill-empty {
+    min-height: 373px;
+}
+.close {
+    text-align: right;
 }
 .modalBody{
     height: 450px;
